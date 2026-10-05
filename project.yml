@@ -1,0 +1,88 @@
+name: DeStream
+options:
+  bundleIdPrefix: se.mediaempire
+  deploymentTarget:
+    macOS: "14.0"
+    iOS: "18.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.2.1"
+    CURRENT_PROJECT_VERSION: "3"
+    DEVELOPMENT_TEAM: 99476Z45K6
+    CODE_SIGN_STYLE: Automatic
+packages:
+  MPVKit:
+    url: https://github.com/mpvkit/MPVKit
+    from: 1.0.0
+targets:
+  DeStream:
+    type: application
+    supportedDestinations: [macOS, iOS]
+    sources:
+      - path: App
+    dependencies:
+      - package: MPVKit
+        product: MPVKit
+    entitlements:
+      path: App/Resources/DeStream.entitlements
+      properties:
+        com.apple.developer.ubiquity-kvstore-identifier: $(TeamIdentifierPrefix)$(CFBundleIdentifier)
+    info:
+      path: App/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: DeStream
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        # Only standard HTTPS/TLS (URLSession, and FFmpeg's TLS for streams) plus the system Keychain: exempt.
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.entertainment
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        UIBackgroundModes: [audio, fetch]
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: se.mediaempire.DeStream
+        PRODUCT_NAME: DeStream
+        ENABLE_HARDENED_RUNTIME: NO
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+        GENERATE_INFOPLIST_FILE: NO
+        SWIFT_STRICT_CONCURRENCY: complete
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+      configs:
+        # Required for notarization; Debug stays off so the ad-hoc-signed test bundle can load into the app.
+        Release:
+          ENABLE_HARDENED_RUNTIME: YES
+  DeStreamTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests
+        excludes: ["Fixtures/**"]
+      - path: Tests/Fixtures
+        buildPhase: resources
+        type: folder
+    dependencies:
+      - target: DeStream
+    settings:
+      base:
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/DeStream.app/Contents/MacOS/DeStream"
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"
+schemes:
+  DeStream:
+    build:
+      targets:
+        DeStream: all
+        DeStreamTests: [test]
+    test:
+      targets: [DeStreamTests]

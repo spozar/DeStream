@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "tt0903747",
+  "type": "series",
+  "name": "Breaking Bad",
+  "year": "2008",
+  "description": "...",
+  "genres": ["Drama"],
+  "poster": "poster.jpg",
+  "backdrop": "backdrop.jpg",
+  "items": [
+    {
+      "videoId": "tt0903747:1:1",
+      "season": 1,
+      "episode": 1,
+      "title": "Pilot",
+      "file": "S01E01.mkv",
+      "sizeBytes": 1234567890,
+      "savedAt": "2026-10-02T12:00:00Z",
+      "progressSeconds": 1834,
+      "durationSeconds": 3480
+    }
+  ]
+}

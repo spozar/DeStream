@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs>
+  <mask id="slots">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="0" y="352" width="560" height="44" rx="22" fill="#000"/>
+    <rect x="0" y="628" width="560" height="44" rx="22" fill="#000"/>
+  </mask>
+  <linearGradient id="g" x1="190" y1="150" x2="900" y2="880" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#B48CFF"/><stop offset="1" stop-color="#5B3BE8"/>
+  </linearGradient>
+</defs>
+<path mask="url(#slots)" d="M250 150Q190 116 190 186V838Q190 908 250 874L860 548Q920 512 860 476Z" fill="url(#g)"/>
+</svg>

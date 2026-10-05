@@ -1,0 +1,5 @@
+{"result":[
+ {"_id":"tt0903747","name":"Breaking Bad","type":"series","poster":"https://images.metahub.space/poster/medium/tt0903747/img","posterShape":"poster","removed":false,"temp":false,"_ctime":"2023-01-10T08:00:00.000Z","_mtime":"2024-05-01T12:30:45.123Z","state":{"lastWatched":"2024-05-01T12:00:00.000Z","timeWatched":1500000,"timeOffset":1234567,"overallTimeWatched":45000000,"timesWatched":12,"flaggedWatched":0,"duration":2820000,"video_id":"tt0903747:1:5","watched":"tt0903747:1:5:5:eJyTZwAAAEAAIA==","noNotif":false,"season":1,"episode":5},"behaviorHints":{"defaultVideoId":null,"featuredVideoId":null,"hasScheduledVideos":false},"year":"2008–2013"},
+ {"_id":"tt0111161","name":"The Shawshank Redemption","type":"movie","poster":"","removed":true,"temp":true,"_ctime":null,"_mtime":"2023-11-14T22:13:20Z","state":{"lastWatched":"","timeWatched":0,"timeOffset":0,"overallTimeWatched":8520000.0,"timesWatched":1,"flaggedWatched":1,"duration":8520000,"video_id":"","watched":null}},
+ {"name":"Missing id","type":"movie","_mtime":"2023-11-14T22:13:20Z","state":{}}
+]}

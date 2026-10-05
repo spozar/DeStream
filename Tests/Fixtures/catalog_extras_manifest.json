@@ -1,0 +1,39 @@
+{
+  "id": "org.example.catalogs",
+  "version": "1.2.0",
+  "name": "Example Catalogs",
+  "resources": ["catalog"],
+  "types": ["movie", "series", "anime"],
+  "catalogs": [
+    {
+      "type": "movie", "id": "trending", "name": "Trending",
+      "extra": [{"name": "genre", "options": ["Action", "Sci-Fi"]}, {"name": "skip"}]
+    },
+    {
+      "type": "movie", "id": "by-year", "name": "By Year",
+      "extra": [{"name": "skip"}, {"name": "genre", "isRequired": true, "options": [2026, "2025", 2024.5, null]}],
+      "extraRequired": ["genre"]
+    },
+    {
+      "type": "series", "id": "search-only", "name": "Search",
+      "extra": [{"name": "search", "isRequired": true}]
+    },
+    {
+      "type": "series", "id": "legacy", "name": "Legacy",
+      "genres": ["Drama", "Comedy"], "extraSupported": ["genre", "skip"]
+    },
+    {
+      "type": "series", "id": "required-no-options", "name": "Broken",
+      "extra": [{"name": "genre", "isRequired": true}]
+    },
+    {
+      "type": "anime", "id": "calendar",
+      "extra": [{"name": "calendarVideosIds", "isRequired": true, "optionsLimit": "100"}]
+    },
+    {"type": "movie", "name": "missing id is dropped"},
+    {
+      "type": "movie", "id": "required-twice",
+      "extra": [{"name": "genre", "isRequired": true, "options": ["A"]}], "extraRequired": ["genre"]
+    }
+  ]
+}

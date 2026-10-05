@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A873FF"/>
+      <stop offset="1" stop-color="#5B3BE8"/>
+    </linearGradient>
+    <clipPath id="squircle">
+      <rect width="1024" height="1024" rx="229"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#squircle)">
+    <rect width="1024" height="1024" fill="url(#bg)"/>
+    <!-- flat diagonal light band -->
+    <path d="M0 0H640L0 640Z" fill="#FFFFFF" opacity="0.07"/>
+    <g transform="translate(24 0)">
+      <!-- stream lines -->
+      <rect x="226" y="300" width="114" height="52" rx="26" fill="#FFFFFF" opacity="0.5"/>
+      <rect x="166" y="486" width="174" height="52" rx="26" fill="#FFFFFF"/>
+      <rect x="226" y="672" width="114" height="52" rx="26" fill="#FFFFFF" opacity="0.5"/>
+      <!-- D -->
+      <path d="M392 272H560A240 240 0 0 1 560 752H392A32 32 0 0 1 360 720V304A32 32 0 0 1 392 272Z" fill="#FFFFFF"/>
+    </g>
+    <!-- play counter, cut out in background colour -->
+    <path d="M494 400L674 512L494 624Z" fill="url(#bg)" stroke="url(#bg)" stroke-width="44" stroke-linejoin="round"/>
+  </g>
+</svg>

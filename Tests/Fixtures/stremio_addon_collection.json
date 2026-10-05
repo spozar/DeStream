@@ -1,0 +1,5 @@
+{"result":{"addons":[
+ {"transportUrl":"https://v3-cinemeta.strem.io/manifest.json","transportName":"http","manifest":{"id":"com.linvo.cinemeta","version":"3.0.13","name":"Cinemeta","description":"The official addon for movie and series catalogs","resources":["catalog","meta","addon_catalog"],"types":["movie","series"],"idPrefixes":["tt"],"catalogs":[{"type":"movie","id":"top","name":"Popular","extra":[{"name":"search","isRequired":false},{"name":"skip","isRequired":false}]}],"behaviorHints":{"newEpisodeNotifications":true}},"flags":{"official":true,"protected":true}},
+ {"transportUrl":"https://example.com/secret-config/manifest.json","manifest":{"id":"org.example.streams","version":"1.2.0","name":"Example Streams","resources":[{"name":"stream","types":["movie","series"],"idPrefixes":["tt"]}],"types":["movie","series"],"catalogs":[]}},
+ {"manifest":{"id":"broken.no.transport"}}
+],"lastModified":"2024-05-01T12:30:45.123Z"}}

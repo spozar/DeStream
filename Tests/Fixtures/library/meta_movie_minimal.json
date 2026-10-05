@@ -1,0 +1,15 @@
+{
+  "id": "tt0111161",
+  "type": "movie",
+  "name": "The Shawshank Redemption",
+  "futureField": {"nested": true},
+  "items": [
+    {
+      "videoId": "tt0111161",
+      "file": "The.Shawshank.Redemption.1994.mkv",
+      "savedAt": "2026-10-01T08:30:00.123Z",
+      "unknownItemField": 42
+    },
+    { "videoId": "broken-item-without-file" }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "streams": [
+    {
+      "name": "[TB⬇️] Comet 2160p",
+      "description": "Breaking.Bad.S01E01.2160p.UHD.BluRay.x265-SAMPLE\n💾 6.1 GB 👤 4\n🔎 Torrentio",
+      "url": "https://comet.elfhosted.com/ZmFrZS1jb25maWctZm9yLXRlc3Rz/playback/1111111111111111111111111111111111111111/n/0/Breaking.Bad.S01E01.2160p.UHD.BluRay.x265-SAMPLE.mkv",
+      "behaviorHints": {
+        "filename": "Breaking.Bad.S01E01.2160p.UHD.BluRay.x265-SAMPLE.mkv",
+        "bingeGroup": "comet|1111111111111111111111111111111111111111",
+        "videoSize": 6549642854
+      }
+    },
+    {
+      "name": "[TB⚡] Comet 1080p",
+      "description": "Breaking.Bad.S01E01.1080p.BluRay.x264-SAMPLE\n💾 2.3 GB 👤 87\n🔎 Torrentio",
+      "url": "https://comet.elfhosted.com/ZmFrZS1jb25maWctZm9yLXRlc3Rz/playback/2222222222222222222222222222222222222222/n/0/Breaking.Bad.S01E01.1080p.BluRay.x264-SAMPLE.mkv",
+      "behaviorHints": {
+        "filename": "Breaking.Bad.S01E01.1080p.BluRay.x264-SAMPLE.mkv",
+        "bingeGroup": "comet|2222222222222222222222222222222222222222",
+        "videoSize": 2469606195
+      }
+    },
+    {
+      "name": "[TB⚡] Comet 720p",
+      "description": "Breaking.Bad.S01E01.720p.WEB-DL.AAC.H264-SAMPLE\n💾 1.1 GB 👤 32\n🔎 Zilean",
+      "url": "https://comet.elfhosted.com/ZmFrZS1jb25maWctZm9yLXRlc3Rz/playback/3333333333333333333333333333333333333333/n/0/Breaking.Bad.S01E01.720p.WEB-DL.AAC.H264-SAMPLE.mp4",
+      "behaviorHints": {
+        "filename": "Breaking.Bad.S01E01.720p.WEB-DL.AAC.H264-SAMPLE.mp4",
+        "bingeGroup": "comet|3333333333333333333333333333333333333333",
+        "videoSize": 1181116006
+      }
+    },
+    {
+      "name": "[TB⬇️] Comet 480p",
+      "description": "Breaking.Bad.S01E01.480p.DVDRip-SAMPLE\n💾 350 MB 👤 2",
+      "infoHash": "4444444444444444444444444444444444444444",
+      "fileIdx": "0",
+      "behaviorHints": { "filename": "Breaking.Bad.S01E01.480p.DVDRip-SAMPLE.avi", "videoSize": "367001600" }
+    },
+    { "name": 42, "url": ["not", "a", "string"], "behaviorHints": "broken" },
+    "not-a-stream"
+  ]
+}
