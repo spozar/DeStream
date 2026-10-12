@@ -13,6 +13,8 @@ struct PlayerTracksPanel: View {
                 Rectangle().fill(Theme.Palette.stroke).frame(height: 1).padding(.horizontal, Theme.Space.m)
                 PlayerSubtitleTimingRow(engine: engine, onChange: onDelayChange)
             }
+            Rectangle().fill(Theme.Palette.stroke).frame(height: 1).padding(.horizontal, Theme.Space.m)
+            PlayerSubtitleSizeRow(enabled: engine.selectedSubtitleTrackID != nil, onChange: onSelect)
         }
         .frame(maxWidth: PlayerPanelMetrics.tracksWidth)
         .playerPanelChrome()
@@ -75,6 +77,61 @@ struct PlayerTracksPanel: View {
         if track.isForced { detail.append("Forced") }
         if track.isExternal { detail.append("External") }
         return (title ?? "Track \(track.id)", detail.isEmpty ? nil : detail.joined(separator: " · "))
+    }
+}
+
+/// Quick size change; the same persisted setting as Settings › Subtitle Appearance.
+struct PlayerSubtitleSizeRow: View {
+    let enabled: Bool
+    let onChange: () -> Void
+
+    @Environment(AppSettings.self) private var settings
+
+    var body: some View {
+        let size = settings.subtitleStyle.size
+        HStack(spacing: Theme.Space.s) {
+            VStack(alignment: .leading, spacing: 1) {
+                Text("Subtitle Size")
+                    .font(Theme.Font.headline)
+                Text(enabled ? "More styles in Settings" : "Turn on subtitles to change their size")
+                    .font(Theme.Font.caption)
+                    .foregroundStyle(Theme.Palette.textTertiary)
+                    .lineLimit(1)
+            }
+            Spacer(minLength: Theme.Space.xs)
+            HStack(spacing: 2) {
+                step(-0.1, systemName: "textformat.size.smaller", help: "Smaller subtitles")
+                Button {
+                    settings.subtitleStyle.size = 1; onChange()
+                } label: {
+                    Text(SubtitleStyleSection.percent(size))
+                        .font(Theme.Font.headline.monospacedDigit())
+                        .contentTransition(.numericText())
+                        .frame(minWidth: 64, minHeight: PlayerMetrics.hit)
+                        .contentShape(Rectangle())
+                }
+                .help("Reset subtitle size")
+                .accessibilityLabel("Subtitle size")
+                .accessibilityValue(SubtitleStyleSection.percent(size))
+                .accessibilityHint("Resets the size")
+                step(0.1, systemName: "textformat.size.larger", help: "Larger subtitles")
+            }
+            .animation(Theme.Motion.fast, value: size)
+        }
+        .disabled(!enabled)
+        .opacity(enabled ? 1 : 0.5)
+        .padding(.horizontal, Theme.Space.m)
+        .padding(.vertical, Theme.Space.s)
+    }
+
+    private func step(_ delta: Double, systemName: String, help: String) -> some View {
+        let range = SubtitleStyle.sizeRange
+        let next = ((settings.subtitleStyle.size + delta) * 10).rounded() / 10
+        return PlayerIconButton(systemName: systemName, size: 15, help: help) {
+            settings.subtitleStyle.size = min(range.upperBound, max(range.lowerBound, next)); onChange()
+        }
+        .disabled(!range.contains(next))
+        .buttonRepeatBehavior(.enabled)
     }
 }
 

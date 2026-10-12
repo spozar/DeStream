@@ -82,6 +82,21 @@ enum PlayerPlatform {
 
     static let willTerminateNotification = UIApplication.willTerminateNotification
 
+    /// iOS forbids GPU work in the background (locking the device included); audio keeps playing there.
+    @MainActor static func observeSystemEvents(_ handler: @escaping @MainActor @Sendable (PlayerSystemEvent) -> Void) -> PlayerObservation {
+        let center = NotificationCenter.default
+        let events: [(Notification.Name, PlayerSystemEvent)] = [
+            (UIApplication.didEnterBackgroundNotification, .videoHidden),
+            (UIApplication.willEnterForegroundNotification, .videoVisible),
+        ]
+        let tokens = events.map { name, event in
+            center.addObserver(forName: name, object: nil, queue: .main) { _ in
+                MainActor.assumeIsolated { handler(event) }
+            }
+        }
+        return PlayerObservation { tokens.forEach(center.removeObserver) }
+    }
+
     /// Orientations the app allows right now; the player widens it to landscape while it's on screen.
     @MainActor static var orientationMask: UIInterfaceOrientationMask = .allButUpsideDown
 

@@ -29,6 +29,7 @@ final class PlayerSession {
     @ObservationIgnored private var saveTask: Task<Void, Never>?
     @ObservationIgnored private var subtitleTask: Task<Void, Never>?
     @ObservationIgnored private var audioObservers: [NSObjectProtocol] = []
+    @ObservationIgnored private var systemObservation: PlayerObservation?
     @ObservationIgnored private var lastSavedSeconds: Double?
     @ObservationIgnored private var isClosed = false
     /// Set when moving on to the next episode, so closing doesn't overwrite "watched" with the credits position.
@@ -129,6 +130,8 @@ final class PlayerSession {
         subtitleTask?.cancel()
         audioObservers.forEach(NotificationCenter.default.removeObserver)
         audioObservers = []
+        systemObservation?.cancel()
+        systemObservation = nil
         engine.shutdown()
         if hasStarted { PlayerPlatform.setPlaybackActive(false) }
         // The session is activated before the player is presented, so release it even if playback never began
@@ -145,6 +148,19 @@ final class PlayerSession {
         audioObservers = PlayerAudioSession.observePauseEvents { [weak self] in
             guard let self, !self.isClosed else { return }
             self.engine.pause()
+        } outputChanged: { [weak self] in
+            guard let self, !self.isClosed else { return }
+            (self.engine as? MPVPlayerController)?.reloadAudioOutput()
+        }
+        systemObservation = PlayerPlatform.observeSystemEvents { [weak self] event in
+            guard let self, !self.isClosed else { return }
+            switch event {
+            case .willSleep:
+                self.engine.pause()
+                self.engine.setVideoSuspended(true)
+            case .videoHidden: self.engine.setVideoSuspended(true)
+            case .videoVisible: self.engine.setVideoSuspended(false)
+            }
         }
         loadAddonSubtitles()
         saveTask = Task { [weak self] in

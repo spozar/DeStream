@@ -184,6 +184,7 @@ struct PlaybackSettingsSection: View {
                              options: [("", "None")] + Self.languageOptions.filter { $0.value != settings.subtitleLanguage })
             }
         }
+        SubtitleStyleSection()
     }
 
     private var modeDetail: String {

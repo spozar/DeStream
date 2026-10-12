@@ -151,11 +151,42 @@ enum PlayerPlatform {
     }
 
     static let willTerminateNotification = NSApplication.willTerminateNotification
+
+    /// Closing the lid sleeps the displays, then the system; both post wake notifications when it opens.
+    @MainActor static func observeSystemEvents(_ handler: @escaping @MainActor @Sendable (PlayerSystemEvent) -> Void) -> PlayerObservation {
+        let center = NSWorkspace.shared.notificationCenter
+        let events: [(Notification.Name, PlayerSystemEvent)] = [
+            (NSWorkspace.screensDidSleepNotification, .videoHidden),
+            (NSWorkspace.willSleepNotification, .willSleep),
+            (NSWorkspace.screensDidWakeNotification, .videoVisible),
+            (NSWorkspace.didWakeNotification, .videoVisible),
+        ]
+        let tokens = events.map { name, event in
+            center.addObserver(forName: name, object: nil, queue: .main) { _ in
+                MainActor.assumeIsolated { handler(event) }
+            }
+        }
+        return PlayerObservation { tokens.forEach(center.removeObserver) }
+    }
 }
 
 enum PlayerAudioSession {
     static func activate() {}
     static func deactivate() {}
-    @MainActor static func observePauseEvents(_ pause: @escaping @MainActor @Sendable () -> Void) -> [NSObjectProtocol] { [] }
+
+    /// Pauses when the output device disappears (like Apple's players) and lets the engine rebuild its audio output
+    /// on whatever device the system switched to.
+    @MainActor static func observePauseEvents(_ pause: @escaping @MainActor @Sendable () -> Void,
+                                              outputChanged: @escaping @MainActor @Sendable () -> Void) -> [NSObjectProtocol] {
+        AudioOutputMonitor.shared.start()
+        let token = NotificationCenter.default.addObserver(forName: AudioOutputMonitor.changed, object: nil, queue: .main) { note in
+            let removed = note.userInfo?[AudioOutputMonitor.previousDeviceRemovedKey] as? Bool ?? false
+            MainActor.assumeIsolated {
+                if removed { pause() }
+                outputChanged()
+            }
+        }
+        return [token]
+    }
 }
 #endif

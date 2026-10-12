@@ -106,6 +106,8 @@ final class MPVCore: @unchecked Sendable {
             ("subs-fallback", "yes"),
             ("sub-ass-override", "no"),
             ("audio-file-auto", "no"),
+            // If the output device vanishes during an audio reload, keep the clock running instead of dropping the audio track.
+            ("audio-fallback-to-null", "yes"),
             ("sub-auto", "no"),
             ("osc", "no"),
             ("load-stats-overlay", "no"),

@@ -30,6 +30,7 @@ struct PlayerView: View {
             start(request)
         }
         .task(id: session.map(ObjectIdentifier.init)) { await nextEpisode?.resolve() }
+        .onChange(of: settings.subtitleStyle) { _, style in session?.engine.setSubtitleStyle(style) }
         .onDisappear {
             session?.close()
             session = nil
@@ -56,6 +57,7 @@ struct PlayerView: View {
     private func start(_ request: PlaybackRequest) {
         let s = PlayerSession(request: request, preferMPV: settings.preferMPV, progress: progress, library: library,
                               trackPreferences: settings.trackPreferences, addons: services.registry)
+        s.engine.setSubtitleStyle(settings.subtitleStyle)
         nextEpisode = NextEpisodeModel(request: request, registry: services.registry, library: library)
         session = s
         s.start()

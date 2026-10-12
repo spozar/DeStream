@@ -39,6 +39,7 @@ final class AVPlayerController: PlayerEngine {
     @ObservationIgnored private var isShutDown = false
     @ObservationIgnored private var pendingStart: Double?
     @ObservationIgnored private var autoSelection = TrackAutoSelection()
+    @ObservationIgnored private var subtitleStyle = SubtitleStyle()
 
     init() {
         timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 600), queue: .main) { [weak self] time in
@@ -62,6 +63,7 @@ final class AVPlayerController: PlayerEngine {
         audioTracks = []
         subtitleTracks = []
         let item = AVPlayerItem(url: url)
+        item.textStyleRules = Self.textStyleRules(for: subtitleStyle)
         itemObservation = item.observe(\.status, options: [.new]) { [weak self] item, _ in
             let failed = item.status == .failed
             DispatchQueue.main.async { MainActor.assumeIsolated { self?.itemStatusChanged(failed: failed) } }
@@ -152,6 +154,11 @@ final class AVPlayerController: PlayerEngine {
         if !isPaused { player.rate = Float(speed) }
     }
 
+    func setSubtitleStyle(_ style: SubtitleStyle) {
+        subtitleStyle = style
+        player.currentItem?.textStyleRules = Self.textStyleRules(for: style)
+    }
+
     func shutdown() {
         guard !isShutDown else { return }
         isShutDown = true
@@ -235,6 +242,27 @@ final class AVPlayerController: PlayerEngine {
             let option = id.flatMap { options.indices.contains($0) ? options[$0] : nil }
             item.select(option, in: group)
         }
+    }
+
+    /// AVFoundation has no outline color or width, so a visible outline maps to a uniform edge.
+    private static func textStyleRules(for style: SubtitleStyle) -> [AVTextStyleRule] {
+        guard !style.isDefault else { return [] }
+        var attributes: [String: Any] = [
+            kCMTextMarkupAttribute_RelativeFontSize as String: style.size * 100,
+            kCMTextMarkupAttribute_ForegroundColorARGB as String: style.textColor.argb,
+            kCMTextMarkupAttribute_BoldStyle as String: style.bold,
+            kCMTextMarkupAttribute_CharacterEdgeStyle as String:
+                (style.outlineWidth > 0 ? kCMTextMarkupCharacterEdgeStyle_Uniform : kCMTextMarkupCharacterEdgeStyle_None) as String,
+            kCMTextMarkupAttribute_CharacterBackgroundColorARGB as String:
+                style.background ? style.backgroundColor.argb : [0.0, 0, 0, 0],
+        ]
+        if let family = style.font.familyName {
+            attributes[kCMTextMarkupAttribute_FontFamilyName as String] = family
+        }
+        if style.elevation > 0 {
+            attributes[kCMTextMarkupAttribute_OrthogonalLinePositionPercentageRelativeToWritingDirection as String] = 90 - style.elevation * 100
+        }
+        return AVTextStyleRule(textMarkupAttributes: attributes).map { [$0] } ?? []
     }
 
     private static func track(_ index: Int, _ option: AVMediaSelectionOption, kind: PlayerTrack.Kind) -> PlayerTrack {

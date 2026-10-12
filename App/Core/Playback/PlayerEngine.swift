@@ -106,8 +106,27 @@ protocol PlayerEngine: AnyObject {
     func setMuted(_ muted: Bool)
     func setSpeed(_ speed: Double)
     func setSubtitleDelay(_ seconds: Double)
+    /// Applies to the current and every later file; safe to call before `load`.
+    func setSubtitleStyle(_ style: SubtitleStyle)
+    /// Stops rendering video (audio continues) while the display is asleep or the app is in the background.
+    func setVideoSuspended(_ suspended: Bool)
     /// Stops playback and releases all resources. The engine is unusable afterwards.
     func shutdown()
+}
+
+/// System events that affect a playing video, delivered by `PlayerPlatform.observeSystemEvents`.
+enum PlayerSystemEvent: Sendable {
+    /// The display went to sleep or the app moved to the background; GPU rendering must stop.
+    case videoHidden
+    /// The system is about to sleep.
+    case willSleep
+    /// The display or app is visible again.
+    case videoVisible
+}
+
+/// Observers registered by the platform layer; `cancel` removes them.
+struct PlayerObservation {
+    let cancel: @MainActor () -> Void
 }
 
 extension PlayerEngine {
@@ -117,6 +136,7 @@ extension PlayerEngine {
     var subtitleDelay: Double { 0 }
     var supportsSubtitleDelay: Bool { false }
     func setSubtitleDelay(_ seconds: Double) {}
+    func setVideoSuspended(_ suspended: Bool) {}
 }
 
 @MainActor

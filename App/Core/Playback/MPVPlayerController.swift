@@ -39,6 +39,7 @@ final class MPVPlayerController: PlayerEngine {
     @ObservationIgnored private var pausedForCache = false
     @ObservationIgnored private var isShutDown = false
     @ObservationIgnored private var isLocalFile = false
+    @ObservationIgnored private var isVideoSuspended = false
     @ObservationIgnored private var pendingSeekTarget: Double?
     @ObservationIgnored private var autoSelection = TrackAutoSelection()
     @ObservationIgnored private var externalSubtitles: [ExternalSubtitle] = []
@@ -184,10 +185,29 @@ final class MPVPlayerController: PlayerEngine {
         core.set("sub-delay", String(format: "%.2f", subtitleDelay))
     }
 
+    func setSubtitleStyle(_ style: SubtitleStyle) {
+        guard !isShutDown else { return }
+        for property in style.mpvProperties { core.set(property.name, property.value) }
+    }
+
     /// Lifts subtitles above the player controls while they are shown (mpv scales this to a 720p canvas).
     func setSubtitlesRaised(_ raised: Bool) {
         guard !isShutDown else { return }
         core.set("sub-margin-y", raised ? "96" : "22")
+    }
+
+    /// Recreates mpv's audio output on the system's current output device.
+    func reloadAudioOutput() {
+        guard !isShutDown else { return }
+        core.command(["ao-reload"])
+    }
+
+    /// Deselecting the video track tears down mpv's video output, so nothing renders into a layer whose display
+    /// is gone (sleep) or submits GPU work in the background (iOS); reselecting it rebuilds the output at the current size.
+    func setVideoSuspended(_ suspended: Bool) {
+        guard suspended != isVideoSuspended, !isShutDown else { return }
+        isVideoSuspended = suspended
+        core.set("vid", suspended ? "no" : "auto")
     }
 
     func shutdown() {

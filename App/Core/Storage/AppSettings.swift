@@ -38,6 +38,13 @@ final class AppSettings {
         didSet { defaults.set(subtitleFallbackLanguage, forKey: "subtitleFallbackLanguage") }
     }
 
+    var subtitleStyle: SubtitleStyle {
+        didSet {
+            guard subtitleStyle != oldValue, let data = try? JSONEncoder().encode(subtitleStyle) else { return }
+            defaults.set(data, forKey: "subtitleStyle")
+        }
+    }
+
     /// Order and visibility of Home rows.
     var homeRows: HomeRowPrefs {
         didSet {
@@ -73,6 +80,7 @@ final class AppSettings {
         subtitleMode = defaults.string(forKey: "subtitleMode").flatMap(SubtitleMode.init(rawValue:)) ?? .off
         subtitleLanguage = defaults.string(forKey: "subtitleLanguage") ?? Self.deviceLanguage
         subtitleFallbackLanguage = defaults.string(forKey: "subtitleFallbackLanguage") ?? (Self.deviceLanguage == "en" ? "" : "en")
+        subtitleStyle = defaults.data(forKey: "subtitleStyle").flatMap { try? JSONDecoder().decode(SubtitleStyle.self, from: $0) } ?? SubtitleStyle()
         homeRows = defaults.data(forKey: "homeRows").flatMap { try? JSONDecoder().decode(HomeRowPrefs.self, from: $0) } ?? HomeRowPrefs()
     }
 }
